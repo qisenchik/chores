@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Словарь Чистоты и Свежести — 家务 (Jiāwù)</title>
+    <!-- Tailwind CSS for modern responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for premium typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for clean aesthetic icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+        }
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            animation: floatUp 8s infinite ease-in-out;
+            pointer-events: none;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.3); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+        .tab-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-tr from-slate-50 via-sky-50/30 to-emerald-50/40 min-h-screen text-slate-800 relative overflow-x-hidden pb-12">
+
+    <!-- Decorative floating bubbles for the "freshness & cleanliness" atmosphere -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-60">
+        <div class="bubble w-8 h-8 left-[10%]" style="animation-delay: 0s; animation-duration: 12s;"></div>
+        <div class="bubble w-12 h-12 left-[30%]" style="animation-delay: 2s; animation-duration: 15s;"></div>
+        <div class="bubble w-6 h-6 left-[50%]" style="animation-delay: 1s; animation-duration: 10s;"></div>
+        <div class="bubble w-16 h-16 left-[75%]" style="animation-delay: 4s; animation-duration: 18s;"></div>
+        <div class="bubble w-10 h-10 left-[90%]" style="animation-delay: 3s; animation-duration: 14s;"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="max-w-6xl mx-auto px-4 pt-8 relative z-10">
+        
+        <!-- App Header -->
+        <header class="text-center mb-10 mt-4">
+            <div class="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-sky-100 shadow-sm mb-4">
+                <span class="text-xs font-semibold text-sky-600 tracking-wider uppercase flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Интерактивный урок по теме Домашние Обязанности
+                </span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold tracking-tight bg-gradient-to-r from-sky-600 via-teal-600 to-emerald-500 bg-clip-text text-transparent pb-2">
+                Словарь Чистоты и Свежести
+            </h1>
+            <p class="text-slate-500 text-lg max-w-2xl mx-auto mt-2">
+                Иллюстрированный интерактивный гид по домашним обязанностям <strong class="text-sky-600">家务 (Jiāwù)</strong> с примерами предложений для практики.
+            </p>
+        </header>
+
+        <!-- Notification Toast (custom replacement for alert) -->
+        <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-3 transform translate-y-24 opacity-0 transition-all duration-300 z-50">
+            <i class="fa-solid id-icon fa-circle-check text-emerald-400"></i>
+            <span id="toast-text" class="text-sm font-medium">Текст уведомления</span>
+        </div>
+
+        <!-- Tab Navigation Menu -->
+        <div class="flex justify-center mb-8">
+            <nav class="flex space-x-2 bg-white/70 backdrop-blur-md p-1.5 rounded-2xl border border-slate-100 shadow-sm">
+                <button onclick="switchTab('dictionary')" id="btn-dictionary" class="nav-btn px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 bg-sky-500 text-white shadow-md">
+                    <i class="fa-solid fa-book-open mr-2"></i>Словарь
+                </button>
+                <button onclick="switchTab('planner')" id="btn-planner" class="nav-btn px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
+                    <i class="fa-solid fa-calendar-week mr-2"></i>Конструктор Недели
+                </button>
+                <button onclick="switchTab('game')" id="btn-game" class="nav-btn px-5 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50">
+                    <i class="fa-solid fa-gamepad mr-2"></i>Мини-игра
+                </button>
+            </nav>
+        </div>
+
+        <!-- ==================== TAB 1: DICTIONARY ==================== -->
+        <section id="tab-dictionary" class="tab-content block">
+            <!-- Search & Filters -->
+            <div class="bg-white/80 backdrop-blur-md p-4 rounded-2xl border border-slate-100 shadow-sm mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
+                    <input type="text" id="vocab-search" oninput="filterVocabulary()" placeholder="Поиск по иероглифам, пиньиню или переводу..." class="w-full pl-11 pr-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400/50 focus:border-sky-400 transition-all text-sm">
+                </div>
+                <div class="flex flex-wrap gap-2" id="category-filters">
+                    <button onclick="filterCategory('all')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-sky-100 text-sky-700">Все</button>
+                    <button onclick="filterCategory('appliances')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">Приборы 🖥️</button>
+                    <button onclick="filterCategory('tools')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">Инвентарь 🧹</button>
+                    <button onclick="filterCategory('chemicals')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">Химия 🧴</button>
+                    <button onclick="filterCategory('verbs')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">Глаголы 💦</button>
+                    <button onclick="filterCategory('phrases')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">Фразы 💬</button>
+                </div>
+            </div>
+
+            <!-- Vocabulary Cards Grid -->
+            <div id="vocab-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Javascript will inject cards dynamically here -->
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: INTERACTIVE PLANNER ==================== -->
+        <section id="tab-planner" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Left Control Panel -->
+                <div class="lg:col-span-5 bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-100 shadow-sm self-start">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="p-2.5 bg-emerald-50 text-emerald-500 rounded-xl">
+                            <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800">Бытовой конструктор</h2>
+                            <p class="text-xs text-slate-400">Собери идеальное предложение для урока</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Select Day -->
+                    <div class="mb-5">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">1. Выберите день недели:</label>
+                        <select id="plan-day" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400 text-sm font-medium">
+                            <option value="星期一">Понедельник (星期一 Xīngqīyī)</option>
+                            <option value="星期二">Вторник (星期二 Xīngqīèr)</option>
+                            <option value="星期三">Среда (星期三 Xīngqīsān)</option>
+                            <option value="星期四">Четверг (星期四 Xīngqīsì)</option>
+                            <option value="星期五">Пятница (星期五 Xīngqīwǔ)</option>
+                            <option value="星期六">Суббота (星期六 Xīngqīliù)</option>
+                            <option value="星期日">Воскресенье (星期日 Xīngqīrì)</option>
+                        </select>
+                    </div>
+
+                    <!-- Step 2: Select Actor -->
+                    <div class="mb-5">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">2. Кто выполняет дело?</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="selectActor('我', this)" class="actor-btn py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-sm font-medium hover:bg-slate-100 focus:outline-none active-actor border-sky-400 bg-sky-50 text-sky-700">我 (Я)</button>
+                            <button onclick="selectActor('女朋友', this)" class="actor-btn py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-sm font-medium hover:bg-slate-100 focus:outline-none">女朋友 (Девушка)</button>
+                            <button onclick="selectActor('我和女朋友一起', this)" class="actor-btn py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-xs font-medium hover:bg-slate-100 focus:outline-none">一起 (Вместе)</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Select Chore -->
+                    <div class="mb-6">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">3. Какое дело поручаем?</label>
+                        <div class="max-h-60 overflow-y-auto pr-1 space-y-1.5 scrollbar-thin" id="planner-chores-list">
+                            <!-- Chores injected by JS -->
+                        </div>
+                    </div>
+
+                    <button onclick="addToSchedule()" class="w-full bg-gradient-to-r from-sky-500 to-teal-500 hover:from-sky-600 hover:to-teal-600 text-white font-semibold py-3.5 rounded-2xl shadow-md transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-calendar-plus"></i>
+                        <span>Добавить в расписание</span>
+                    </button>
+                </div>
+
+                <!-- Right Schedule View -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-100 shadow-sm">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-regular fa-calendar-check text-sky-500"></i>
+                                Наш график уборки
+                            </h3>
+                            <button onclick="clearSchedule()" class="text-xs text-red-500 font-medium hover:underline flex items-center gap-1">
+                                <i class="fa-regular fa-trash-can"></i> Очистить всё
+                            </button>
+                        </div>
+
+                        <!-- Weekly Days representation -->
+                        <div class="space-y-4" id="weekly-schedule-container">
+                            <!-- Days cards injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Sentence Builder Display -->
+                    <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-100/80 p-5 rounded-3xl shadow-sm">
+                        <h4 class="text-sm font-semibold text-emerald-800 flex items-center gap-2 mb-2">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            Грамматическая подсказка:
+                        </h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            В китайском языке обстоятельство времени всегда ставится <strong>после подлежащего</strong> (или в самом начале) и обязательно <strong>перед действием</strong>! 
+                            <br><span class="font-mono bg-white/60 px-1 py-0.5 rounded text-[10px] text-teal-700">Формула: [Кто] + [Когда] + (вместе) + [Дело]</span> или <span class="font-mono bg-white/60 px-1 py-0.5 rounded text-[10px] text-teal-700">[Когда] + [Кто] + [Дело]</span>.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: MINI GAME ==================== -->
+        <section id="tab-game" class="tab-content hidden">
+            <div class="max-w-xl mx-auto bg-white/90 backdrop-blur-md p-8 rounded-3xl border border-slate-100 shadow-sm text-center relative overflow-hidden">
+                
+                <!-- Game Home State -->
+                <div id="game-start-screen" class="space-y-6">
+                    <div class="w-20 h-20 bg-sky-50 text-sky-500 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800">Быстрая разминка</h2>
+                        <p class="text-slate-500 text-sm mt-1">Проверь свои знания бытовой лексики! Тебе предстоит сопоставить китайское выражение с правильным переводом.</p>
+                    </div>
+                    <button onclick="startGame()" class="px-8 py-3.5 bg-gradient-to-r from-sky-500 to-emerald-500 text-white font-bold rounded-2xl hover:opacity-90 shadow-md transition-all transform hover:-translate-y-0.5">
+                        Начать викторину
+                    </button>
+                </div>
+
+                <!-- Game Active Play State -->
+                <div id="game-play-screen" class="hidden space-y-6">
+                    <div class="flex justify-between items-center text-xs text-slate-400 font-medium">
+                        <span>Вопрос <span id="current-question" class="text-slate-700 font-bold">1</span> из 5</span>
+                        <span>Счёт: <span id="game-score" class="text-emerald-500 font-bold">0</span></span>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div id="game-progress" class="bg-gradient-to-r from-sky-400 to-emerald-400 h-full w-0 transition-all duration-300"></div>
+                    </div>
+
+                    <!-- Question Container -->
+                    <div class="py-8 bg-slate-50/50 rounded-2xl border border-slate-100 flex flex-col items-center justify-center relative">
+                        <span id="game-character" class="text-4xl font-bold text-slate-800 tracking-wide font-chinese">扫地</span>
+                        <span id="game-pinyin" class="text-sky-600 font-medium text-sm mt-2">sǎo dì</span>
+                        <button onclick="speakGameWord()" class="absolute top-4 right-4 text-slate-400 hover:text-sky-500 p-2 rounded-full hover:bg-white transition-all shadow-sm" title="Озвучить">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </button>
+                    </div>
+
+                    <!-- Options Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="game-options">
+                        <!-- Options injected dynamically by JS -->
+                    </div>
+                </div>
+
+                <!-- Game Score/Finish State -->
+                <div id="game-result-screen" class="hidden space-y-6 py-6">
+                    <div class="w-24 h-24 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto text-4xl animate-bounce">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800">Отличная работа! ✨</h2>
+                        <p class="text-slate-500 text-sm mt-1">Твой результат: <span id="final-score" class="font-bold text-slate-800">5</span> из 5 верных ответов!</p>
+                    </div>
+                    <div class="flex space-x-3 justify-center">
+                        <button onclick="startGame()" class="px-6 py-3 bg-sky-500 text-white font-semibold rounded-xl hover:bg-sky-600 transition-all text-sm">
+                            Играть ещё раз
+                        </button>
+                        <button onclick="switchTab('dictionary')" class="px-6 py-3 bg-slate-100 text-slate-600 font-semibold rounded-xl hover:bg-slate-200 transition-all text-sm">
+                            Вернуться к словарю
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JS Logic -->
+    <script>
+        // Database of clean & fresh chores vocabulary with Chinese examples
+        const vocabulary = [
+            // 🖥️ Appliances
+            { 
+                id: 1, char: "洗衣机", pinyin: "xǐyījī", translation: "Стиральная машина", cat: "appliances", icon: "fa-washing-machine", 
+                exChar: "我家里有一台新的洗衣机。", exPin: "Wǒ jiālǐ yǒu yì tái xīn de xǐyījī.", exTrans: "У меня дома есть новая стиральная машина." 
+            },
+            { 
+                id: 2, char: "吸尘器", pinyin: "xīchénqì", translation: "Пылесос", cat: "appliances", icon: "fa-soap", 
+                exChar: "这个吸尘器非常好用。", exPin: "Zhège xīchénqì fēicháng hǎoyòng.", exTrans: "Этот пылесос очень удобен в использовании." 
+            },
+            { 
+                id: 3, char: "洗碗机", pinyin: "xǐwǎnji", translation: "Посудомоечная машина", cat: "appliances", icon: "fa-circle-dot", 
+                exChar: "我们的洗碗机坏了。", exPin: "Wǒmen de xǐwǎnji huài le.", exTrans: "Наша посудомоечная машина сломалась." 
+            },
+            { 
+                id: 4, char: "熨斗", pinyin: "yùndǒu", translation: "Утюг", cat: "appliances", icon: "fa-temperature-high", 
+                exChar: "你用熨斗的时候要小心。", exPin: "Nǐ yòng yùndǒu de shíhou yào xiǎoxīn.", exTrans: "Будь осторожен, когда пользуешься утюгом." 
+            },
+            
+            // 🧹 Tools
+            { 
+                id: 5, char: "拖把", pinyin: "tuōbǎ", translation: "Швабра", cat: "tools", icon: "fa-broom", 
+                exChar: "请把拖把放在水桶里。", exPin: "Qǐng bǎ tuōbǎ fàng zài shuǐtǒng lǐ.", exTrans: "Пожалуйста, положите швабру в ведро." 
+            },
+            { 
+                id: 6, char: "扫帚", pinyin: "sàozhou", translation: "Веник / метла", cat: "tools", icon: "fa-broom", 
+                exChar: "房间里有一把扫帚。", exPin: "Fángjiān lǐ yǒu yì bǎ sàozhou.", exTrans: "В комнате есть веник." 
+            },
+            { 
+                id: 7, char: "抹布", pinyin: "mǎbù", translation: "Тряпка для уборки", cat: "tools", icon: "fa-rug", 
+                exChar: "我用抹布擦一擦桌子。", exPin: "Wǒ yòng mǎbù cā yi cā zhuōzi.", exTrans: "Я протру стол тряпкой." 
+            },
+            { 
+                id: 8, char: "水桶", pinyin: "shuǐtǒng", translation: "Ведро", cat: "tools", icon: "fa-bucket", 
+                exChar: "水桶里有很多干净的水。", exPin: "Shuǐtǒng lǐ yǒu hěnduō gānjìng de shuǐ.", exTrans: "В ведре много чистой воды." 
+            },
+            { 
+                id: 9, char: "桌子", pinyin: "zhuōzi", translation: "Стол", cat: "tools", icon: "fa-table", 
+                exChar: "桌子上有我的汉语书。", exPin: "Zhuōzi shàng yǒu wǒ de Hànyǔ shū.", exTrans: "На столе лежит мой учебник китайского языка." 
+            },
+            { 
+                id: 10, char: "玻璃", pinyin: "bōli", translation: "Стекло / окна", cat: "tools", icon: "fa-window-maximize", 
+                exChar: "窗户上的玻璃非常干净。", exPin: "Chuānghu shàng de bōli fēicháng gānjìng.", exTrans: "Стекло на окне очень чистое." 
+            },
+            { 
+                id: 11, char: "地", pinyin: "dì", translation: "Земля / пол", cat: "tools", icon: "fa-square", 
+                exChar: "地上有一点脏，要扫一扫。", exPin: "Dìshàng yǒu yìdiǎn zāng, yào sǎo yi sǎo.", exTrans: "На полу немного грязно, нужно подмести." 
+            },
+            { 
+                id: 12, char: "脏衣服", pinyin: "zāng yīfu", translation: "Грязная одежда", cat: "tools", icon: "fa-shirt", 
+                exChar: "这些脏衣服需要今天洗。", exPin: "Zhèxiē zāng yīfu xūyào jīntiān xǐ.", exTrans: "Эту грязную одежду нужно постирать сегодня." 
+            },
+            { 
+                id: 13, char: "干净衣服", pinyin: "gānjìng yīfu", translation: "Чистая одежда", cat: "tools", icon: "fa-shirt", 
+                exChar: "干净衣服已经放好了。", exPin: "Gānjìng yīfu yǐjīng fàng hǎo le.", exTrans: "Чистая одежда уже убрана/сложена." 
+            },
+            
+            // 🧴 Chemicals
+            { 
+                id: 14, char: "清洁剂", pinyin: "qīngjiéjì", translation: "Чистящее средство", cat: "chemicals", icon: "fa-flask-vial", 
+                exChar: "我们要买一瓶新的清洁剂。", exPin: "Wǒmen yào mǎi yì píng xīn de qīngjiéjì.", exTrans: "Нам нужно купить новую бутылку чистящего средства." 
+            },
+            { 
+                id: 15, char: "洗衣粉", pinyin: "xǐyīfěn", translation: "Стиральный порошок", cat: "chemicals", icon: "fa-box-open", 
+                exChar: "洗衣服的时候需要放洗衣粉。", exPin: "Xǐ yīfu de shíhou xūyào fàng xǐyīfěn.", exTrans: "При стирке одежды нужно добавлять стиральный порошок." 
+            },
+            { 
+                id: 16, char: "洗洁精", pinyin: "xǐjiéjīng", translation: "Средство для посуды", cat: "chemicals", icon: "fa-bottle-droplet", 
+                exChar: "洗洁精在厨房的桌子上。", exPin: "Xǐjiéjīng zài chúfáng de zhuōzi shàng.", exTrans: "Средство для мытья посуды стоит на кухонном столе." 
+            },
+            { 
+                id: 17, char: "垃圾", pinyin: "lājī", translation: "Мусор", cat: "chemicals", icon: "fa-trash", 
+                exChar: "房间里不能有太多垃圾。", exPin: "Fángjiān lǐ bùnéng yǒu tài duō lājī.", exTrans: "В комнате не должно быть слишком много мусора." 
+            },
+            
+            // 💦 Verbs
+            { 
+                id: 18, char: "洗", pinyin: "xǐ", translation: "Мыть / стирать", cat: "verbs", icon: "fa-water", 
+                exChar: "你洗手了吗？", exPin: "Nǐ xǐshǒu le ma?", exTrans: "Ты помыл руки?" 
+            },
+            { 
+                id: 19, char: "扫", pinyin: "sǎo", translation: "Подметать", cat: "verbs", icon: "fa-wind", 
+                exChar: "我来扫这个房间。", exPin: "Wǒ lái sǎo zhège fángjiān.", exTrans: "Я подмету эту комнату." 
+            },
+            { 
+                id: 20, char: "拖", pinyin: "tuō", translation: "Мыть шваброй", cat: "verbs", icon: "fa-fill-drip", 
+                exChar: "他正在拖地。", exPin: "Tā zhèngzài tuō dì.", exTrans: "Он сейчас моет пол." 
+            },
+            { 
+                id: 21, char: "擦", pinyin: "cā", translation: "Тереть / протирать", cat: "verbs", icon: "fa-hands-bubbles", 
+                exChar: "请帮我擦一下桌子。", exPin: "Qǐng bāng wǒ cā yíxià zhuōzi.", exTrans: "Пожалуйста, помоги мне протереть стол." 
+            },
+            { 
+                id: 22, char: "吸", pinyin: "xī", translation: "Втягивать / всасывать", cat: "verbs", icon: "fa-circle-arrow-down", 
+                exChar: "这个机器可以吸水。", exPin: "Zhège jīqì kěyǐ xīshuǐ.", exTrans: "Эта машина может всасывать воду." 
+            },
+            { 
+                id: 23, char: "熨", pinyin: "yùn", translation: "Гладить (утюгом)", cat: "verbs", icon: "fa-square-check", 
+                exChar: "这件衣服很难熨。", exPin: "Zhè jiàn yīfu hěn nán yùn.", exTrans: "Эту одежду очень трудно гладить." 
+            },
+            { 
+                id: 24, char: "晾干", pinyin: "liànggān", translation: "Сушить белье", cat: "verbs", icon: "fa-sun", 
+                exChar: "衣服洗好以后要晾干。", exPin: "Yīfu xǐ hǎo yǐhòu yào liànggān.", exTrans: "После стирки одежду нужно высушить." 
+            },
+            { 
+                id: 25, char: "丢", pinyin: "diū", translation: "Выбрасывать / избавляться", cat: "verbs", icon: "fa-arrow-right-from-bracket", 
+                exChar: "垃圾应该丢在这里。", exPin: "Lājī yīnggāi diū zài zhèlǐ.", exTrans: "Мусор следует выбрасывать здесь." 
+            },
+            { 
+                id: 26, char: "摆", pinyin: "bǎi", translation: "Расставлять / сервировать", cat: "verbs", icon: "fa-utensils", 
+                exChar: "桌子上摆着一些花。", exPin: "Zhuōzi shàng bǎizhe yìxiē huā.", exTrans: "На столе расставлены цветы." 
+            },
+            { 
+                id: 27, char: "放", pinyin: "fàng", translation: "Класть / помещать", cat: "verbs", icon: "fa-arrow-down-to-bracket", 
+                exChar: "请把书放在桌子上。", exPin: "Qǐng bǎ shū fàng zài zhuōzi shàng.", exTrans: "Пожалуйста, положи книгу на стол." 
+            },
+            { 
+                id: 28, char: "倒", pinyin: "dào", translation: "Наливать / насыпать", cat: "verbs", icon: "fa-glass-water", 
+                exChar: "给我倒一杯热水，谢谢。", exPin: "Gěi wǒ dào yì bēi rè shuǐ, xièxie.", exTrans: "Налей мне чашку горячей воды, спасибо." 
+            },
+            { 
+                id: 29, char: "收拾", pinyin: "shōushi", translation: "Прибираться / раскладывать", cat: "verbs", icon: "fa-sparkles", 
+                exChar: "我们今天下午要收拾房间。", exPin: "Wǒmen jīntiān xiàwǔ yào shōushi fángjiān.", exTrans: "Сегодня днем мы будем прибираться в комнате." 
+            },
+
+            // 💬 Phrases
+            { 
+                id: 30, char: "做家务", pinyin: "zuò jiāwù", translation: "Делать дела по дому", cat: "phrases", icon: "fa-house-chimney-crack", 
+                exChar: "我和女朋友一起做家务。", exPin: "Wǒ hé nǚpéngyou yīqǐ zuò jiāwù.", exTrans: "Мы с девушкой вместе делаем дела по дому." 
+            },
+            { 
+                id: 31, char: "扫地", pinyin: "sǎo dì", translation: "Подметать пол", cat: "phrases", icon: "fa-broom", 
+                exChar: "我每天早上都要扫地。", exPin: "Wǒ měitiān zǎoshang dōu yào sǎo dì.", exTrans: "Каждое утро мне приходится подметать пол." 
+            },
+            { 
+                id: 32, char: "拖地", pinyin: "tuō dì", translation: "Мыть пол (шваброй)", cat: "phrases", icon: "fa-soap", 
+                exChar: "地很干净，不需要拖地。", exPin: "Dì hěn gānjìng, bù xūyào tuō dì.", exTrans: "Пол чистый, мыть его не нужно." 
+            },
+            { 
+                id: 33, char: "吸尘", pinyin: "xī chén", translation: "Пылесосить", cat: "phrases", icon: "fa-wind", 
+                exChar: "房间里有很多灰尘，要吸尘了。", exPin: "Fángjiān lǐ yǒu hěnduō huīchén, yào xīchén le.", exTrans: "В комнате много пыли, пора пропылесосить." 
+            },
+            { 
+                id: 34, char: "擦玻璃", pinyin: "cā bōli", translation: "Мыть окна / стёкла", cat: "phrases", icon: "fa-window-restore", 
+                exChar: "我们每个星期天擦玻璃。", exPin: "Wǒmen měi gè Xīngqītiān cā bōli.", exTrans: "Мы моем окна каждое воскресенье." 
+            },
+            { 
+                id: 35, char: "洗衣服", pinyin: "xǐ yīfu", translation: "Стирать вещи", cat: "phrases", icon: "fa-shirt", 
+                exChar: "星期六是我洗衣服的时间。", exPin: "Xīngqīliù shì wǒ xǐ yīfu de shíjiān.", exTrans: "Суббота — время для моей стирки." 
+            },
+            { 
+                id: 36, char: "熨衣服", pinyin: "yùn yīfu", translation: "Гладить одежду", cat: "phrases", icon: "fa-temperature-high", 
+                exChar: "他洗完衣服以后开始熨衣服。", exPin: "Tā xǐ wán yīfu yǐhòu kāishǐ yùn yīfu.", exTrans: "Постирав одежду, он начал ее гладить." 
+            },
+            { 
+                id: 37, char: "买东西", pinyin: "mǎi dōngxi", translation: "Закупаться вещами", cat: "phrases", icon: "fa-cart-shopping", 
+                exChar: "妈妈去超市买东西了。", exPin: "Māma qù chāoshì mǎi dōngxi le.", exTrans: "Мама пошла в супермаркет за покупками." 
+            },
+            { 
+                id: 38, char: "丢垃圾", pinyin: "diū lājī", translation: "Выносить мусор", cat: "phrases", icon: "fa-dumpster", 
+                exChar: "出门的时候别忘了丢垃圾。", exPin: "Chūmén de shíhou bié wàngle diū lājī.", exTrans: "Выходя из дома, не забудь выбросить мусор." 
+            },
+            { 
+                id: 39, char: "摆桌子", pinyin: "bǎi zhuōzi", translation: "Накрывать на стол", cat: "phrases", icon: "fa-pizza-slice", 
+                exChar: "吃饭以前，我先摆桌子。", exPin: "Chīfàn yǐqián, wǒ xiān bǎi zhuōzi.", exTrans: "Перед едой я сначала накрываю на стол." 
+            },
+            { 
+                id: 40, char: "放洗碗机", pinyin: "fàng xǐwǎnji", translation: "Загружать посудомойку", cat: "phrases", icon: "fa-arrows-down-to-people", 
+                exChar: "脏盘子都放洗碗机里吧。", exPin: "Zāng pánzi dōu fàng xǐwǎnji lǐ ba.", exTrans: "Положи грязные тарелки в посудомоечную машину." 
+            },
+            { 
+                id: 41, char: "洗碗", pinyin: "xǐ wǎn", translation: "Мыть посуду руками", cat: "phrases", icon: "fa-circle-check", 
+                exChar: "今天轮到你洗碗了。", exPin: "Jīntiān lúndào nǐ xǐwǎn le.", exTrans: "Сегодня твоя очередь мыть посуду." 
+            },
+            { 
+                id: 42, char: "倒洗洁精", pinyin: "dào xǐjiéjīng", translation: "Наливать средство для посуды", cat: "phrases", icon: "fa-hand-holding-droplet", 
+                exChar: "洗碗的时候要倒一点洗洁精。", exPin: "Xǐwǎn de shíhou yào dào yìdiǎn xǐjiéjīng.", exTrans: "При мытье посуды нужно налить немного средства." 
+            },
+            { 
+                id: 43, char: "放洗衣粉", pinyin: "fàng xǐyīfěn", translation: "Насыпать стиральный порошок", cat: "phrases", icon: "fa-spoon", 
+                exChar: "别忘了在洗衣机里放洗衣粉。", exPin: "Bié wàngle zài xǐyījī lǐ fàng xǐyīfěn.", exTrans: "Не забудь насыпать стиральный порошок в стиральную машину." 
+            },
+            { 
+                id: 44, char: "收拾房间", pinyin: "shōushi fángjiān", translation: "Прибираться в комнате", cat: "phrases", icon: "fa-house", 
+                exChar: "这个周末我要好好收拾房间。", exPin: "Zhège zhōumò wǒ yào hǎohāo shōushi fángjiān.", exTrans: "В эти выходные я собираюсь как следует прибраться в комнате." 
+            },
+            { 
+                id: 45, char: "浇花", pinyin: "jiāo huā", translation: "Поливать цветы", cat: "phrases", icon: "fa-seedling", 
+                exChar: "阳台上的花需要每天浇水。", exPin: "Yángtái shàng de huā xūyào měitiān jiāoshuǐ.", exTrans: "Цветы на балконе нужно поливать каждый день." 
+            }
+        ];
+
+        // Planner Chore options (only phrases that represent specific actions)
+        const choreActions = vocabulary.filter(item => item.cat === "phrases" && item.char !== "做家务");
+
+        // Schedule Data state representation
+        let scheduleData = {
+            "星期一": [], "星期二": [], "星期三": [], "星期四": [], "星期五": [], "星期六": [], "星期日": []
+        };
+
+        let activeActor = '我';
+
+        // Load schedule from localStorage if exists
+        if (localStorage.getItem('chores_schedule')) {
+            try {
+                scheduleData = JSON.parse(localStorage.getItem('chores_schedule'));
+            } catch(e) {
+                console.error("Failed to load schedule", e);
+            }
+        }
+
+        // Navigation Tab Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-sky-500', 'text-white', 'shadow-md');
+                btn.classList.add('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-50');
+            });
+
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.classList.remove('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-50');
+            activeBtn.classList.add('bg-sky-500', 'text-white', 'shadow-md');
+
+            if (tabId === 'game') {
+                resetGame();
+            }
+        }
+
+        // Notification/Toast Helper
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            const icon = toast.querySelector('.id-icon');
+            
+            toastText.innerText = message;
+            if (type === 'success') {
+                icon.className = 'fa-solid id-icon fa-circle-check text-emerald-400 text-lg';
+            } else {
+                icon.className = 'fa-solid id-icon fa-triangle-exclamation text-amber-400 text-lg';
+            }
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        // Voice TTS (Text-to-Speech)
+        function speakChinese(text) {
+            if ('speechSynthesis' in window) {
+                // Cancel active speeches
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-CN';
+                utterance.rate = 0.85; // slightly slower for better learning
+                
+                // Try to find a standard Chinese voice if available
+                const voices = window.speechSynthesis.getVoices();
+                const zhVoice = voices.find(voice => voice.lang.includes('zh') || voice.lang.includes('ZH'));
+                if (zhVoice) {
+                    utterance.voice = zhVoice;
+                }
+                
+                window.speechSynthesis.speak(utterance);
+            } else {
+                showToast("Ваш браузер не поддерживает синтез речи 😔", "error");
+            }
+        }
+
+        // Render Vocabulary Tab Cards
+        function renderVocabularyCards(items) {
+            const grid = document.getElementById('vocab-grid');
+            grid.innerHTML = '';
+
+            if (items.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-16 text-center text-slate-400">
+                        <i class="fa-regular fa-folder-open text-4xl mb-3"></i>
+                        <p>Ничего не найдено. Попробуйте другой запрос!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white/90 backdrop-blur-md p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 relative group flex flex-col justify-between";
+                
+                let catBadgeColor = "bg-slate-100 text-slate-600";
+                let catName = "Разное";
+                if (item.cat === 'appliances') { catBadgeColor = "bg-sky-50 text-sky-700"; catName = "Прибор"; }
+                else if (item.cat === 'tools') { catBadgeColor = "bg-emerald-50 text-emerald-700"; catName = "Инвентарь"; }
+                else if (item.cat === 'chemicals') { catBadgeColor = "bg-purple-50 text-purple-700"; catName = "Химия"; }
+                else if (item.cat === 'verbs') { catBadgeColor = "bg-amber-50 text-amber-700"; catName = "Глагол"; }
+                else if (item.cat === 'phrases') { catBadgeColor = "bg-rose-50 text-rose-700"; catName = "Фраза"; }
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${catBadgeColor}">
+                                ${catName}
+                            </span>
+                            <button onclick="speakChinese('${item.char}')" class="text-slate-300 hover:text-sky-500 p-2 rounded-full hover:bg-slate-50 transition-all group-hover:scale-110" title="Прослушать слово">
+                                <i class="fa-solid fa-volume-high text-sm"></i>
+                            </button>
+                        </div>
+                        <div class="text-center py-4 border-b border-slate-100/60">
+                            <h3 class="text-3xl font-bold tracking-wide text-slate-800 font-chinese select-all mb-1 cursor-pointer hover:text-sky-600 transition-colors" onclick="speakChinese('${item.char}')">
+                                ${item.char}
+                            </h3>
+                            <p class="text-sky-600 font-semibold text-sm font-mono tracking-wide">${item.pinyin}</p>
+                            <p class="text-slate-600 font-medium text-base mt-2 px-1">${item.translation}</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-1">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Пример использования:</span>
+                            <button onclick="speakChinese('${item.exChar}')" class="text-slate-300 hover:text-emerald-500 p-1 rounded hover:bg-slate-50 transition-all" title="Прослушать пример">
+                                <i class="fa-solid fa-volume-high text-xs"></i>
+                            </button>
+                        </div>
+                        <p class="text-sm font-semibold text-slate-700 font-chinese cursor-pointer hover:text-emerald-600 transition-colors" onclick="speakChinese('${item.exChar}')">
+                            ${item.exChar}
+                        </p>
+                        <p class="text-[11px] text-sky-600 font-mono tracking-wide mt-0.5 leading-tight">${item.exPin}</p>
+                        <p class="text-[11px] text-slate-500 font-normal mt-0.5 leading-tight">${item.exTrans}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Filtering vocabulary based on input & tags
+        let currentCategory = 'all';
+        function filterVocabulary() {
+            const query = document.getElementById('vocab-search').value.toLowerCase().trim();
+            const filtered = vocabulary.filter(item => {
+                const matchesCategory = currentCategory === 'all' || item.cat === currentCategory;
+                const matchesQuery = item.char.includes(query) || 
+                                     item.pinyin.toLowerCase().includes(query) || 
+                                     item.translation.toLowerCase().includes(query);
+                return matchesCategory && matchesQuery;
+            });
+            renderVocabularyCards(filtered);
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            
+            // Adjust active button styling
+            document.querySelectorAll('#category-filters button').forEach(btn => {
+                btn.className = "cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all";
+            });
+            event.target.className = "cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white shadow-sm transition-all";
+            
+            filterVocabulary();
+        }
+
+        // Planner Actor Select logic
+        function selectActor(actor, btn) {
+            activeActor = actor;
+            document.querySelectorAll('.actor-btn').forEach(b => {
+                b.className = "actor-btn py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-sm font-medium hover:bg-slate-100 focus:outline-none";
+            });
+            btn.className = "actor-btn py-2.5 rounded-xl border border-sky-400 bg-sky-50 text-sky-700 text-sm font-medium hover:bg-sky-100 focus:outline-none active-actor";
+        }
+
+        // Render Chores Selection list inside the planner
+        function renderPlannerChoresList() {
+            const container = document.getElementById('planner-chores-list');
+            container.innerHTML = '';
+            
+            choreActions.forEach((chore, index) => {
+                const choreId = `chore-option-${chore.id}`;
+                const radio = document.createElement('div');
+                radio.className = "flex items-center space-x-3 p-3 bg-slate-50 hover:bg-sky-50/50 rounded-xl cursor-pointer border border-slate-100 hover:border-sky-100 transition-all";
+                radio.onclick = () => {
+                    document.querySelectorAll('.chore-radio').forEach(r => r.checked = false);
+                    document.getElementById(choreId).checked = true;
+                };
+                
+                radio.innerHTML = `
+                    <input type="radio" name="selected-chore" id="${choreId}" value="${chore.id}" class="chore-radio w-4 h-4 text-sky-500 border-slate-300 focus:ring-sky-400" ${index === 0 ? 'checked' : ''}>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold text-slate-800 font-chinese">${chore.char}</p>
+                        <p class="text-xs text-slate-400">${chore.pinyin} — ${chore.translation}</p>
+                    </div>
+                    <button onclick="event.stopPropagation(); speakChinese('${chore.char}')" class="text-slate-300 hover:text-sky-500 p-1 rounded-lg hover:bg-white" title="Прослушать">
+                        <i class="fa-solid fa-volume-high text-xs"></i>
+                    </button>
+                `;
+                container.appendChild(radio);
+            });
+        }
+
+        // Generate Sentence for Chore entry
+        function generateSentence(actor, day, choreChar) {
+            let rawStr = '';
+            let pinyinStr = '';
+            let translationStr = '';
+            
+            const dayMeta = {
+                "星期一": { pin: "xīngqīyī", ru: "В понедельник" },
+                "星期二": { pin: "xīngqīèr", ru: "Во вторник" },
+                "星期三": { pin: "xīngqīsān", ru: "В среду" },
+                "星期四": { pin: "xīngqīsì", ru: "В четверг" },
+                "星期五": { pin: "xīngqīwǔ", ru: "В пятницу" },
+                "星期六": { pin: "xīngqīliù", ru: "В субботу" },
+                "星期日": { pin: "xīngqīrì", ru: "В воскресенье" }
+            };
+
+            const actorMeta = {
+                "我": { pin: "wǒ", ru: "я" },
+                "女朋友": { pin: "wǒ nǚpéngyou", char: "我女朋友", ru: "моя девушка" }, 
+                "我和女朋友一起": { pin: "wǒ hé nǚpéngyou yīqǐ", char: "我和女朋友一起", ru: "мы с девушкой вместе" }
+            };
+
+            const choreObj = vocabulary.find(item => item.char === choreChar);
+            const chorePin = choreObj ? choreObj.pinyin : "";
+            const choreRu = choreObj ? choreObj.translation.toLowerCase() : "";
+
+            const actChar = actorMeta[actor].char || actor;
+            rawStr = `${day}，${actChar}${choreChar}。`;
+            pinyinStr = `${dayMeta[day].pin}, ${actorMeta[actor].pin} ${chorePin}.`;
+            translationStr = `${dayMeta[day].ru} ${actorMeta[actor].ru} ${choreRu}.`;
+
+            return { chinese: rawStr, pinyin: pinyinStr, translation: translationStr };
+        }
+
+        // Add to weekly schedule array
+        function addToSchedule() {
+            const day = document.getElementById('plan-day').value;
+            const selectedRadio = document.querySelector('.chore-radio:checked');
+            
+            if (!selectedRadio) {
+                showToast("Пожалуйста, выберите хотя бы одно дело!", "error");
+                return;
+            }
+
+            const choreId = selectedRadio.value;
+            const choreObj = vocabulary.find(item => item.id == choreId);
+            
+            const scheduleItem = {
+                id: Date.now(),
+                actor: activeActor,
+                chore: choreObj.char,
+                sentence: generateSentence(activeActor, day, choreObj.char)
+            };
+
+            scheduleData[day].push(scheduleItem);
+            localStorage.setItem('chores_schedule', JSON.stringify(scheduleData));
+            
+            renderSchedule();
+            showToast("Добавлено в твой график! ✨");
+        }
+
+        // Delete from schedule
+        function deleteScheduleItem(day, id) {
+            scheduleData[day] = scheduleData[day].filter(item => item.id !== id);
+            localStorage.setItem('chores_schedule', JSON.stringify(scheduleData));
+            renderSchedule();
+            showToast("Удалено из расписания", "info");
+        }
+
+        // Clear everything
+        function clearSchedule() {
+            scheduleData = {
+                "星期一": [], "星期二": [], "星期三": [], "星期四": [], "星期五": [], "星期六": [], "星期日": []
+            };
+            localStorage.setItem('chores_schedule', JSON.stringify(scheduleData));
+            renderSchedule();
+            showToast("Расписание успешно очищено", "info");
+        }
+
+        // Render Schedule visual display
+        function renderSchedule() {
+            const container = document.getElementById('weekly-schedule-container');
+            container.innerHTML = '';
+
+            const russianDays = {
+                "星期一": "Понедельник",
+                "星期二": "Вторник",
+                "星期三": "Среда",
+                "星期四": "Четверг",
+                "星期五": "Пятница",
+                "星期六": "Суббота",
+                "星期日": "Воскресенье"
+            };
+
+            Object.keys(scheduleData).forEach(day => {
+                const dayCard = document.createElement('div');
+                dayCard.className = "bg-slate-50/70 hover:bg-slate-50 rounded-2xl p-4 border border-slate-100 transition-all";
+                
+                const itemsCount = scheduleData[day].length;
+                let itemsListHtml = '';
+
+                if (itemsCount === 0) {
+                    itemsListHtml = `
+                        <p class="text-xs text-slate-300 italic py-1 pl-1">Нет запланированных дел на этот день</p>
+                    `;
+                } else {
+                    scheduleData[day].forEach(item => {
+                        let actorBadge = "bg-slate-200 text-slate-600";
+                        if (item.actor === '我') { actorBadge = "bg-sky-100 text-sky-700"; }
+                        else if (item.actor === '女朋友') { actorBadge = "bg-purple-100 text-purple-700"; }
+                        else { actorBadge = "bg-emerald-100 text-emerald-700"; }
+
+                        itemsListHtml += `
+                            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 p-3 bg-white rounded-xl shadow-sm border border-slate-100/50 mt-2 relative group">
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${actorBadge}">${item.actor === '我和女朋友一起' ? 'Вместе' : item.actor}</span>
+                                        <span class="text-sm font-bold text-slate-800 font-chinese">${item.chore}</span>
+                                    </div>
+                                    <div class="mt-1.5 bg-slate-50/50 p-2 rounded-lg border border-slate-100/40">
+                                        <p class="text-sm font-semibold text-sky-800 font-chinese flex items-center gap-1.5">
+                                            <span>${item.sentence.chinese}</span>
+                                            <button onclick="speakChinese('${item.sentence.chinese}')" class="text-slate-300 hover:text-sky-600 focus:outline-none" title="Озвучить предложение">
+                                                <i class="fa-solid fa-volume-high text-[11px]"></i>
+                                            </button>
+                                        </p>
+                                        <p class="text-[11px] text-sky-600 font-mono tracking-wide mt-0.5">${item.sentence.pinyin}</p>
+                                        <p class="text-[11px] text-slate-500 font-normal mt-0.5">${item.sentence.translation}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-1 justify-end md:ml-3">
+                                    <button onclick="copyToClipboard('${item.sentence.chinese}')" class="text-slate-400 hover:text-sky-500 p-2 rounded-lg hover:bg-slate-50 transition-all" title="Копировать предложение">
+                                        <i class="fa-regular fa-copy text-xs"></i>
+                                    </button>
+                                    <button onclick="deleteScheduleItem('${day}', ${item.id})" class="text-slate-400 hover:text-red-500 p-2 rounded-lg hover:bg-slate-50 transition-all" title="Удалить">
+                                        <i class="fa-regular fa-trash-can text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                dayCard.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-slate-100/60 pb-2 mb-2">
+                        <div class="flex items-baseline space-x-2">
+                            <h4 class="font-bold text-slate-800 text-sm">${russianDays[day]}</h4>
+                            <span class="text-[11px] text-slate-400 font-mono">${day}</span>
+                        </div>
+                        <span class="text-xs bg-slate-200/80 px-2 py-0.5 rounded-full font-bold text-slate-500">${itemsCount} дел(а)</span>
+                    </div>
+                    <div class="space-y-1">
+                        ${itemsListHtml}
+                    </div>
+                `;
+                container.appendChild(dayCard);
+            });
+        }
+
+        // Copy item to clipboard securely using legacy document API or system fallback
+        function copyToClipboard(text) {
+            const tempEl = document.createElement('textarea');
+            tempEl.value = text;
+            document.body.appendChild(tempEl);
+            tempEl.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempEl);
+            showToast("Предложение скопировано в буфер! 📋");
+        }
+
+        // Tab 3: Mini Game Logic
+        let gameQuestions = [];
+        let currentQuestionIdx = 0;
+        let gameScore = 0;
+
+        function resetGame() {
+            document.getElementById('game-start-screen').classList.remove('hidden');
+            document.getElementById('game-play-screen').classList.add('hidden');
+            document.getElementById('game-result-screen').classList.add('hidden');
+        }
+
+        function startGame() {
+            // Get 5 random words from vocabulary
+            const shuffled = [...vocabulary].sort(() => 0.5 - Math.random());
+            gameQuestions = shuffled.slice(0, 5);
+            currentQuestionIdx = 0;
+            gameScore = 0;
+
+            document.getElementById('game-start-screen').classList.add('hidden');
+            document.getElementById('game-result-screen').classList.add('hidden');
+            document.getElementById('game-play-screen').classList.remove('hidden');
+
+            renderQuestion();
+        }
+
+        function speakGameWord() {
+            const currentItem = gameQuestions[currentQuestionIdx];
+            if (currentItem) {
+                speakChinese(currentItem.char);
+            }
+        }
+
+        function renderQuestion() {
+            const currentItem = gameQuestions[currentQuestionIdx];
+            document.getElementById('current-question').innerText = currentQuestionIdx + 1;
+            document.getElementById('game-score').innerText = gameScore;
+            
+            // Progress Bar Animation
+            const progressPct = ((currentQuestionIdx) / 5) * 100;
+            document.getElementById('game-progress').style.width = `${progressPct}%`;
+
+            document.getElementById('game-character').innerText = currentItem.char;
+            document.getElementById('game-pinyin').innerText = currentItem.pinyin;
+
+            // Generate Options (1 correct, 3 random wrong answers)
+            const options = [currentItem.translation];
+            const wrongPool = vocabulary.filter(item => item.id !== currentItem.id);
+            const shuffledWrong = wrongPool.sort(() => 0.5 - Math.random());
+            
+            for (let i = 0; i < 3; i++) {
+                if (shuffledWrong[i]) {
+                    options.push(shuffledWrong[i].translation);
+                }
+            }
+
+            // Shuffle option list so the correct answer is not always first
+            const shuffledOptions = options.sort(() => 0.5 - Math.random());
+
+            const optionsContainer = document.getElementById('game-options');
+            optionsContainer.innerHTML = '';
+
+            shuffledOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 bg-slate-50 border border-slate-200 hover:border-sky-400 hover:bg-sky-50/30 rounded-xl font-medium text-slate-700 text-sm transition-all focus:outline-none";
+                btn.onclick = () => selectOption(opt, btn, currentItem.translation);
+                btn.innerText = opt;
+                optionsContainer.appendChild(btn);
+            });
+
+            // Automatically speak the word on loading question (good auditory reinforcement)
+            setTimeout(() => speakChinese(currentItem.char), 300);
+        }
+
+        function selectOption(selectedOpt, btn, correctOpt) {
+            // Disable all buttons in option grid to prevent multiple clicks
+            const buttons = document.querySelectorAll('#game-options button');
+            buttons.forEach(b => b.disabled = true);
+
+            if (selectedOpt === correctOpt) {
+                gameScore++;
+                btn.className = "w-full text-left p-4 bg-emerald-500 border border-emerald-500 text-white rounded-xl font-medium text-sm transition-all shadow-md";
+                btn.innerHTML = `<i class="fa-solid fa-circle-check mr-2 animate-bounce"></i> Верно! ${selectedOpt}`;
+            } else {
+                btn.className = "w-full text-left p-4 bg-rose-500 border border-rose-500 text-white rounded-xl font-medium text-sm transition-all shadow-md";
+                btn.innerHTML = `<i class="fa-solid fa-circle-xmark mr-2 animate-bounce"></i> Неверно! ${selectedOpt}`;
+                
+                // Highlight the correct one
+                buttons.forEach(b => {
+                    if (b.innerText.includes(correctOpt)) {
+                        b.className = "w-full text-left p-4 bg-emerald-100 border border-emerald-300 text-emerald-800 rounded-xl font-medium text-sm transition-all";
+                        b.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Верный ответ: ${correctOpt}`;
+                    }
+                });
+            }
+
+            // Move to next question after short delay
+            setTimeout(() => {
+                currentQuestionIdx++;
+                if (currentQuestionIdx < 5) {
+                    renderQuestion();
+                } else {
+                    finishGame();
+                }
+            }, 2000);
+        }
+
+        function finishGame() {
+            document.getElementById('game-play-screen').classList.add('hidden');
+            document.getElementById('game-result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = gameScore;
+        }
+
+        // Initialize App on Window Load
+        window.onload = function() {
+            renderVocabularyCards(vocabulary);
+            renderPlannerChoresList();
+            renderSchedule();
+        }
+    </script>
+</body>
+</html>
