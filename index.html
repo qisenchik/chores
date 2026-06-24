@@ -91,7 +91,7 @@
                     <input type="text" id="vocab-search" oninput="filterVocabulary()" placeholder="Поиск по иероглифам, пиньиню или переводу..." class="w-full pl-11 pr-4 py-3 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400/50 focus:border-sky-400 transition-all text-sm">
                 </div>
                 <div class="flex flex-wrap gap-2" id="category-filters">
-                    <button onclick="filterCategory('all')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-sky-100 text-sky-700">Все</button>
+                    <button onclick="filterCategory('all')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-sky-500 text-white">Все</button>
                     <button onclick="filterCategory('appliances')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">Приборы 🖥️</button>
                     <button onclick="filterCategory('tools')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">Инвентарь 🧹</button>
                     <button onclick="filterCategory('chemicals')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">Химия 🧴</button>
@@ -267,8 +267,9 @@
     <!-- JS Logic -->
     <script>
         // Database of clean & fresh chores vocabulary with Chinese examples
+        // Updated with complete, verbatim vocabulary from the images image_ec7c5d.jpg and image_ec7c19.jpg
         const vocabulary = [
-            // 🖥️ Appliances
+            // 🖥️ Appliances (including laundry photo items)
             { 
                 id: 1, char: "洗衣机", pinyin: "xǐyījī", translation: "Стиральная машина", cat: "appliances", icon: "fa-washing-machine", 
                 exChar: "我家里有一台新的洗衣机。", exPin: "Wǒ jiālǐ yǒu yì tái xīn de xǐyījī.", exTrans: "У меня дома есть новая стиральная машина." 
@@ -278,183 +279,239 @@
                 exChar: "这个吸尘器非常好用。", exPin: "Zhège xīchénqì fēicháng hǎoyòng.", exTrans: "Этот пылесос очень удобен в использовании." 
             },
             { 
-                id: 3, char: "洗碗机", pinyin: "xǐwǎnji", translation: "Посудомоечная машина", cat: "appliances", icon: "fa-circle-dot", 
-                exChar: "我们的洗碗机坏了。", exPin: "Wǒmen de xǐwǎnji huài le.", exTrans: "Наша посудомоечная машина сломалась." 
+                id: 3, char: "洗衣干衣机", pinyin: "xǐyī gānyījī", translation: "Стирально-сушильная машина", cat: "appliances", icon: "fa-circle-dot", 
+                exChar: "这台洗衣干衣机是新买来的。", exPin: "Zhè tái xǐyī gānyījī shì xīn mǎi lái de.", exTrans: "Эта стирально-сушильная машина куплена недавно." 
             },
             { 
-                id: 4, char: "熨斗", pinyin: "yùndǒu", translation: "Утюг", cat: "appliances", icon: "fa-temperature-high", 
+                id: 4, char: "滚筒式烘干机", pinyin: "gǔntǒngshì hōnggānjī", translation: "Сушильная машина", cat: "appliances", icon: "fa-circle-notch", 
+                exChar: "洗完衣服后，我放进滚筒式烘干机。", exPin: "Xǐ wán yīfu hòu, wǒ fàngjìn gǔntǒngshì hōnggānjī.", exTrans: "После стирки одежды я кладу её в сушильную машину." 
+            },
+            { 
+                id: 5, char: "熨斗", pinyin: "yùndǒu", translation: "Утюг", cat: "appliances", icon: "fa-temperature-high", 
                 exChar: "你用熨斗的时候要小心。", exPin: "Nǐ yòng yùndǒu de shíhou yào xiǎoxīn.", exTrans: "Будь осторожен, когда пользуешься утюгом." 
             },
+            { 
+                id: 6, char: "洗碗机", pinyin: "xǐwǎnji", translation: "Посудомоечная машина", cat: "appliances", icon: "fa-circle-dot", 
+                exChar: "我们的洗碗机坏了。", exPin: "Wǒmen de xǐwǎnji huài le.", exTrans: "Наша посудомоечная машина сломалась." 
+            },
             
-            // 🧹 Tools
+            // 🧹 Tools (including visual cleaning & laundry gear)
             { 
-                id: 5, char: "拖把", pinyin: "tuōbǎ", translation: "Швабра", cat: "tools", icon: "fa-broom", 
+                id: 7, char: "拖把", pinyin: "tuōbǎ", translation: "Швабра", cat: "tools", icon: "fa-broom", 
                 exChar: "请把拖把放在水桶里。", exPin: "Qǐng bǎ tuōbǎ fàng zài shuǐtǒng lǐ.", exTrans: "Пожалуйста, положите швабру в ведро." 
-            },
-            { 
-                id: 6, char: "扫帚", pinyin: "sàozhou", translation: "Веник / метла", cat: "tools", icon: "fa-broom", 
-                exChar: "房间里有一把扫帚。", exPin: "Fángjiān lǐ yǒu yì bǎ sàozhou.", exTrans: "В комнате есть веник." 
-            },
-            { 
-                id: 7, char: "抹布", pinyin: "mǎbù", translation: "Тряпка для уборки", cat: "tools", icon: "fa-rug", 
-                exChar: "我用抹布擦一擦桌子。", exPin: "Wǒ yòng mǎbù cā yi cā zhuōzi.", exTrans: "Я протру стол тряпкой." 
             },
             { 
                 id: 8, char: "水桶", pinyin: "shuǐtǒng", translation: "Ведро", cat: "tools", icon: "fa-bucket", 
                 exChar: "水桶里有很多干净的水。", exPin: "Shuǐtǒng lǐ yǒu hěnduō gānjìng de shuǐ.", exTrans: "В ведре много чистой воды." 
             },
             { 
-                id: 9, char: "桌子", pinyin: "zhuōzi", translation: "Стол", cat: "tools", icon: "fa-table", 
+                id: 9, char: "吸管", pinyin: "xīguǎn", translation: "Всасывающий шланг пылесоса", cat: "tools", icon: "fa-lines-leaning", 
+                exChar: "这个吸尘器的吸管很长。", exPin: "Zhège xīchénqì de xīguǎn hěn cháng.", exTrans: "Шланг этого пылесоса очень длинный." 
+            },
+            { 
+                id: 10, char: "簸箕", pinyin: "bòji", translation: "Совок для мусора", cat: "tools", icon: "fa-square-rss", 
+                exChar: "用扫帚把灰尘扫进簸箕里。", exPin: "Yòng sàozhou bǎ huīchén sǎo jìn bòji lǐ.", exTrans: "С помощью веника заметите пыль в совок." 
+            },
+            { 
+                id: 11, char: "短柄扫帚", pinyin: "duǎnbǐng sàozhou", translation: "Щетка с короткой ручкой", cat: "tools", icon: "fa-paint-brush", 
+                exChar: "短柄扫帚放在红色的簸箕旁。", exPin: "Duǎnbǐng sàozhou fàng zài hóngsè de bòji páng.", exTrans: "Щетка с короткой ручкой лежит рядом с красным совком." 
+            },
+            { 
+                id: 12, char: "抹布", pinyin: "mābù", translation: "Тряпка для пыли", cat: "tools", icon: "fa-rug", 
+                exChar: "我用抹布擦一擦桌子。", exPin: "Wǒ yòng mābù cā yi cā zhuōzi.", exTrans: "Я протру стол тряпкой." 
+            },
+            { 
+                id: 13, char: "洗衣篮", pinyin: "xǐyīlán", translation: "Корзина для грязного белья", cat: "tools", icon: "fa-shopping-basket", 
+                exChar: "把脏衣物放进那个洗衣篮里。", exPin: "Bǎ zāngyīwù fàngjìn nàge xǐyīlán lǐ.", exTrans: "Положи грязное белье в ту корзину для белья." 
+            },
+            { 
+                id: 14, char: "衣物篮", pinyin: "yīwùlán", translation: "Корзина для чистого белья", cat: "tools", icon: "fa-basket-shopping", 
+                exChar: "衣物篮里装满了干净的衣物。", exPin: "Yīwùlán lǐ zhuāngmǎn le gānjìng de yīwù.", exTrans: "Корзина для белья заполнена чистой одеждой." 
+            },
+            { 
+                id: 15, char: "衣服夹", pinyin: "yīfujiá", translation: "Прищепки", cat: "tools", icon: "fa-paperclip", 
+                exChar: "我需要几个衣服夹来挂衣服。", exPin: "Wǒ xūyào jǐ gè yīfujiá lái guà yīfu.", exTrans: "Мне нужно несколько прищепок, чтобы повесить одежду." 
+            },
+            { 
+                id: 16, char: "晾衣绳", pinyin: "liàngyīshéng", translation: "Бельевая веревка", cat: "tools", icon: "fa-ellipsis", 
+                exChar: "衣服挂在阳台的晾衣绳上。", exPin: "Yīfu guà zài yángtái de liàngyīshéng shàng.", exTrans: "Одежда висит на бельевой веревке на балконе." 
+            },
+            { 
+                id: 17, char: "熨衣板", pinyin: "yùnyībǎn", translation: "Гладильная доска", cat: "tools", icon: "fa-table", 
+                exChar: "请帮我把熨衣板撑起来。", exPin: "Qǐng bāng wǒ bǎ yùnyībǎn chēng qǐlái.", exTrans: "Пожалуйста, помоги мне разложить гладильную доску." 
+            },
+            { 
+                id: 18, char: "脏衣物", pinyin: "zāngyīwù", translation: "Грязное белье и вещи", cat: "tools", icon: "fa-shirt", 
+                exChar: "these dirty washing need to be washed immediately.", exChar: "这些脏衣物需要马上洗。", exPin: "Zhèxiē zāngyīwù xūyào mǎshàng xǐ.", exTrans: "Это грязное белье нужно сразу постирать." 
+            },
+            { 
+                id: 19, char: "干净衣物", pinyin: "gānjìng yīwù", translation: "Чистая одежда и белье", cat: "tools", icon: "fa-thumbs-up", 
+                exChar: "干净衣物已经整齐地放好了。", exPin: "Gānjìng yīwù yǐjīng zhěngqí de fàng hǎo le.", exTrans: "Чистая одежда уже аккуратно убрана." 
+            },
+            { 
+                id: 20, char: "扫帚", pinyin: "sàozhou", translation: "Веник и метла", cat: "tools", icon: "fa-broom", 
+                exChar: "房间里有一把扫帚。", exPin: "Fángjiān lǐ yǒu yì bǎ sàozhou.", exTrans: "В комнате есть веник." 
+            },
+            { 
+                id: 21, char: "桌子", pinyin: "zhuōzi", translation: "Стол", cat: "tools", icon: "fa-table-list", 
                 exChar: "桌子上有我的汉语书。", exPin: "Zhuōzi shàng yǒu wǒ de Hànyǔ shū.", exTrans: "На столе лежит мой учебник китайского языка." 
             },
             { 
-                id: 10, char: "玻璃", pinyin: "bōli", translation: "Стекло / окна", cat: "tools", icon: "fa-window-maximize", 
+                id: 22, char: "玻璃", pinyin: "bōli", translation: "Стекло и окна", cat: "tools", icon: "fa-window-maximize", 
                 exChar: "窗户上的玻璃非常干净。", exPin: "Chuānghu shàng de bōli fēicháng gānjìng.", exTrans: "Стекло на окне очень чистое." 
             },
             { 
-                id: 11, char: "地", pinyin: "dì", translation: "Земля / пол", cat: "tools", icon: "fa-square", 
+                id: 23, char: "地", pinyin: "dì", translation: "Земля и пол", cat: "tools", icon: "fa-square", 
                 exChar: "地上有一点脏，要扫一扫。", exPin: "Dìshàng yǒu yìdiǎn zāng, yào sǎo yi sǎo.", exTrans: "На полу немного грязно, нужно подмести." 
             },
-            { 
-                id: 12, char: "脏衣服", pinyin: "zāng yīfu", translation: "Грязная одежда", cat: "tools", icon: "fa-shirt", 
-                exChar: "这些脏衣服需要今天洗。", exPin: "Zhèxiē zāng yīfu xūyào jīntiān xǐ.", exTrans: "Эту грязную одежду нужно постирать сегодня." 
-            },
-            { 
-                id: 13, char: "干净衣服", pinyin: "gānjìng yīfu", translation: "Чистая одежда", cat: "tools", icon: "fa-shirt", 
-                exChar: "干净衣服已经放好了。", exPin: "Gānjìng yīfu yǐjīng fàng hǎo le.", exTrans: "Чистая одежда уже убрана/сложена." 
-            },
             
-            // 🧴 Chemicals
+            // 🧴 Chemicals (including visual cleaning agents)
             { 
-                id: 14, char: "清洁剂", pinyin: "qīngjiéjì", translation: "Чистящее средство", cat: "chemicals", icon: "fa-flask-vial", 
+                id: 24, char: "清洁剂", pinyin: "qīngjiéjì", translation: "Чистящее средство", cat: "chemicals", icon: "fa-flask-vial", 
                 exChar: "我们要买一瓶新的清洁剂。", exPin: "Wǒmen yào mǎi yì píng xīn de qīngjiéjì.", exTrans: "Нам нужно купить новую бутылку чистящего средства." 
             },
             { 
-                id: 15, char: "洗衣粉", pinyin: "xǐyīfěn", translation: "Стиральный порошок", cat: "chemicals", icon: "fa-box-open", 
+                id: 25, char: "去污粉", pinyin: "qùwūfěn", translation: "Чистящий порошок", cat: "chemicals", icon: "fa-soap", 
+                exChar: "用去污粉可以洗掉厨具上的油污。", exPin: "Yòng qùwūfěn kěyǐ xǐdiào chújù shàng de yóuwū.", exTrans: "С помощью чистящего порошка можно отмыть жир с кухонной утвари." 
+            },
+            { 
+                id: 26, char: "洗涤液", pinyin: "xǐdíyè", translation: "Жидкое средство", cat: "chemicals", icon: "fa-tint", 
+                exChar: "洗涤液比洗衣粉更温和。", exPin: "Xǐdíyè bǐ xǐyīfěn gèng wēnhé.", exTrans: "Жидкое моющее средство мягче, чем стиральный порошок." 
+            },
+            { 
+                id: 27, char: "漂白剂", pinyin: "piǎobáijì", translation: "Отбеливатель", cat: "chemicals", icon: "fa-wine-bottle", 
+                exChar: "这件白色衬衫可以用漂白剂洗。", exPin: "Zhè jiàn báisè chènshān kěyǐ yòng piǎobáijì xǐ.", exTrans: "Эту белую рубашку можно постирать с отбеливателем." 
+            },
+            { 
+                id: 28, char: "上光剂", pinyin: "shàngguāngjì", translation: "Полироль", cat: "chemicals", icon: "fa-spray-can", 
+                exChar: "用上光剂擦木桌会非常亮。", exPin: "Yòng shàngguāngjì cā mù zhuō huì fēicháng liàng.", exTrans: "Если натереть деревянный стол полиролью, он будет сильно блестеть." 
+            },
+            { 
+                id: 29, char: "洗衣粉", pinyin: "xǐyīfěn", translation: "Стиральный порошок", cat: "chemicals", icon: "fa-box-open", 
                 exChar: "洗衣服的时候需要放洗衣粉。", exPin: "Xǐ yīfu de shíhou xūyào fàng xǐyīfěn.", exTrans: "При стирке одежды нужно добавлять стиральный порошок." 
             },
             { 
-                id: 16, char: "洗洁精", pinyin: "xǐjiéjīng", translation: "Средство для посуды", cat: "chemicals", icon: "fa-bottle-droplet", 
-                exChar: "洗洁精在厨房的桌子上。", exPin: "Xǐjiéjīng zài chúfáng de zhuōzi shàng.", exTrans: "Средство для мытья посуды стоит на кухонном столе." 
+                id: 30, char: "洗洁精", pinyin: "xǐjiéjīng", translation: "Средство для посуды", cat: "chemicals", icon: "fa-bottle-droplet", 
+                exChar: "洗洁精在厨房 of the table.", exChar: "洗洁精在厨房的桌子上。", exPin: "Xǐjiéjīng zài chúfáng de zhuōzi shàng.", exTrans: "Средство для мытья посуды стоит на кухонном столе." 
             },
             { 
-                id: 17, char: "垃圾", pinyin: "lājī", translation: "Мусор", cat: "chemicals", icon: "fa-trash", 
+                id: 31, char: "垃圾", pinyin: "lājī", translation: "Мусор", cat: "chemicals", icon: "fa-trash", 
                 exChar: "房间里不能有太多垃圾。", exPin: "Fángjiān lǐ bùnéng yǒu tài duō lājī.", exTrans: "В комнате не должно быть слишком много мусора." 
             },
             
             // 💦 Verbs
             { 
-                id: 18, char: "洗", pinyin: "xǐ", translation: "Мыть / стирать", cat: "verbs", icon: "fa-water", 
+                id: 32, char: "洗", pinyin: "xǐ", translation: "Мыть и стирать", cat: "verbs", icon: "fa-water", 
                 exChar: "你洗手了吗？", exPin: "Nǐ xǐshǒu le ma?", exTrans: "Ты помыл руки?" 
             },
             { 
-                id: 19, char: "扫", pinyin: "sǎo", translation: "Подметать", cat: "verbs", icon: "fa-wind", 
+                id: 33, char: "扫", pinyin: "sǎo", translation: "Подметать", cat: "verbs", icon: "fa-wind", 
                 exChar: "我来扫这个房间。", exPin: "Wǒ lái sǎo zhège fángjiān.", exTrans: "Я подмету эту комнату." 
             },
             { 
-                id: 20, char: "拖", pinyin: "tuō", translation: "Мыть шваброй", cat: "verbs", icon: "fa-fill-drip", 
+                id: 34, char: "拖", pinyin: "tuō", translation: "Мыть шваброй", cat: "verbs", icon: "fa-fill-drip", 
                 exChar: "他正在拖地。", exPin: "Tā zhèngzài tuō dì.", exTrans: "Он сейчас моет пол." 
             },
             { 
-                id: 21, char: "擦", pinyin: "cā", translation: "Тереть / протирать", cat: "verbs", icon: "fa-hands-bubbles", 
+                id: 35, char: "擦", pinyin: "cā", translation: "Тереть и протирать", cat: "verbs", icon: "fa-hands-bubbles", 
                 exChar: "请帮我擦一下桌子。", exPin: "Qǐng bāng wǒ cā yíxià zhuōzi.", exTrans: "Пожалуйста, помоги мне протереть стол." 
             },
             { 
-                id: 22, char: "吸", pinyin: "xī", translation: "Втягивать / всасывать", cat: "verbs", icon: "fa-circle-arrow-down", 
-                exChar: "这个机器可以吸水。", exPin: "Zhège jīqì kěyǐ xīshuǐ.", exTrans: "Эта машина может всасывать воду." 
+                id: 36, char: "吸", pinyin: "xī", translation: "Втягивать и всасывать", cat: "verbs", icon: "fa-circle-arrow-down", 
+                exChar: "这个吸尘器可以吸的很干净。", exPin: "Zhège xīchénqì kěyǐ xī de hěn gānjìng.", exTrans: "Этот пылесос может всасывать очень чисто." 
             },
             { 
-                id: 23, char: "熨", pinyin: "yùn", translation: "Гладить (утюгом)", cat: "verbs", icon: "fa-square-check", 
+                id: 37, char: "熨", pinyin: "yùn", translation: "Гладить утюгом", cat: "verbs", icon: "fa-square-check", 
                 exChar: "这件衣服很难熨。", exPin: "Zhè jiàn yīfu hěn nán yùn.", exTrans: "Эту одежду очень трудно гладить." 
             },
             { 
-                id: 24, char: "晾干", pinyin: "liànggān", translation: "Сушить белье", cat: "verbs", icon: "fa-sun", 
-                exChar: "衣服洗好以后要晾干。", exPin: "Yīfu xǐ hǎo yǐhòu yào liànggān.", exTrans: "После стирки одежду нужно высушить." 
+                id: 38, char: "晾干", pinyin: "liànggān", translation: "Сушить и вешать сушиться", cat: "verbs", icon: "fa-sun", 
+                exChar: "洗干净的衣服要挂在外面晾干。", exPin: "Xǐ gānjìng de yīfu yào guà zài wàimiàn liànggān.", exTrans: "Выстиранную одежду нужно повесить на улицу сушиться." 
             },
             { 
-                id: 25, char: "丢", pinyin: "diū", translation: "Выбрасывать / избавляться", cat: "verbs", icon: "fa-arrow-right-from-bracket", 
+                id: 39, char: "丢", pinyin: "diū", translation: "Выбрасывать и избавляться", cat: "verbs", icon: "fa-arrow-right-from-bracket", 
                 exChar: "垃圾应该丢在这里。", exPin: "Lājī yīnggāi diū zài zhèlǐ.", exTrans: "Мусор следует выбрасывать здесь." 
             },
             { 
-                id: 26, char: "摆", pinyin: "bǎi", translation: "Расставлять / сервировать", cat: "verbs", icon: "fa-utensils", 
+                id: 40, char: "摆", pinyin: "bǎi", translation: "Расставлять и сервировать", cat: "verbs", icon: "fa-utensils", 
                 exChar: "桌子上摆着一些花。", exPin: "Zhuōzi shàng bǎizhe yìxiē huā.", exTrans: "На столе расставлены цветы." 
             },
             { 
-                id: 27, char: "放", pinyin: "fàng", translation: "Класть / помещать", cat: "verbs", icon: "fa-arrow-down-to-bracket", 
+                id: 41, char: "放", pinyin: "fàng", translation: "Класть и помещать", cat: "verbs", icon: "fa-arrow-down-to-bracket", 
                 exChar: "请把书放在桌子上。", exPin: "Qǐng bǎ shū fàng zài zhuōzi shàng.", exTrans: "Пожалуйста, положи книгу на стол." 
             },
             { 
-                id: 28, char: "倒", pinyin: "dào", translation: "Наливать / насыпать", cat: "verbs", icon: "fa-glass-water", 
+                id: 42, char: "倒", pinyin: "dào", translation: "Наливать и насыпать", cat: "verbs", icon: "fa-glass-water", 
                 exChar: "给我倒一杯热水，谢谢。", exPin: "Gěi wǒ dào yì bēi rè shuǐ, xièxie.", exTrans: "Налей мне чашку горячей воды, спасибо." 
             },
             { 
-                id: 29, char: "收拾", pinyin: "shōushi", translation: "Прибираться / раскладывать", cat: "verbs", icon: "fa-sparkles", 
+                id: 43, char: "收拾", pinyin: "shōushi", translation: "Прибираться", cat: "verbs", icon: "fa-sparkles", 
                 exChar: "我们今天下午要收拾房间。", exPin: "Wǒmen jīntiān xiàwǔ yào shōushi fángjiān.", exTrans: "Сегодня днем мы будем прибираться в комнате." 
             },
 
             // 💬 Phrases
             { 
-                id: 30, char: "做家务", pinyin: "zuò jiāwù", translation: "Делать дела по дому", cat: "phrases", icon: "fa-house-chimney-crack", 
+                id: 44, char: "做家务", pinyin: "zuò jiāwù", translation: "Делать дела по дому", cat: "phrases", icon: "fa-house-chimney-crack", 
                 exChar: "我和女朋友一起做家务。", exPin: "Wǒ hé nǚpéngyou yīqǐ zuò jiāwù.", exTrans: "Мы с девушкой вместе делаем дела по дому." 
             },
             { 
-                id: 31, char: "扫地", pinyin: "sǎo dì", translation: "Подметать пол", cat: "phrases", icon: "fa-broom", 
+                id: 45, char: "扫地", pinyin: "sǎo dì", translation: "Подметать пол", cat: "phrases", icon: "fa-broom", 
                 exChar: "我每天早上都要扫地。", exPin: "Wǒ měitiān zǎoshang dōu yào sǎo dì.", exTrans: "Каждое утро мне приходится подметать пол." 
             },
             { 
-                id: 32, char: "拖地", pinyin: "tuō dì", translation: "Мыть пол (шваброй)", cat: "phrases", icon: "fa-soap", 
+                id: 46, char: "拖地", pinyin: "tuō dì", translation: "Мыть пол", cat: "phrases", icon: "fa-soap", 
                 exChar: "地很干净，不需要拖地。", exPin: "Dì hěn gānjìng, bù xūyào tuō dì.", exTrans: "Пол чистый, мыть его не нужно." 
             },
             { 
-                id: 33, char: "吸尘", pinyin: "xī chén", translation: "Пылесосить", cat: "phrases", icon: "fa-wind", 
+                id: 47, char: "吸尘", pinyin: "xī chén", translation: "Пылесосить", cat: "phrases", icon: "fa-wind", 
                 exChar: "房间里有很多灰尘，要吸尘了。", exPin: "Fángjiān lǐ yǒu hěnduō huīchén, yào xīchén le.", exTrans: "В комнате много пыли, пора пропылесосить." 
             },
             { 
-                id: 34, char: "擦玻璃", pinyin: "cā bōli", translation: "Мыть окна / стёкла", cat: "phrases", icon: "fa-window-restore", 
+                id: 48, char: "擦玻璃", pinyin: "cā bōli", translation: "Мыть окна и стёкла", cat: "phrases", icon: "fa-window-restore", 
                 exChar: "我们每个星期天擦玻璃。", exPin: "Wǒmen měi gè Xīngqītiān cā bōli.", exTrans: "Мы моем окна каждое воскресенье." 
             },
             { 
-                id: 35, char: "洗衣服", pinyin: "xǐ yīfu", translation: "Стирать вещи", cat: "phrases", icon: "fa-shirt", 
-                exChar: "星期六是我洗衣服的时间。", exPin: "Xīngqīliù shì wǒ xǐ yīfu de shíjiān.", exTrans: "Суббота — время для моей стирки." 
+                id: 49, char: "洗衣服", pinyin: "xǐ yīfu", translation: "Стирать вещи", cat: "phrases", icon: "fa-shirt", 
+                exChar: "星期六是我洗衣服的时间。", exPin: "Xīngqīliù ... wǒ xǐ yīfu de shíjiān.", exTrans: "Суббота — время для моей стирки." 
             },
             { 
-                id: 36, char: "熨衣服", pinyin: "yùn yīfu", translation: "Гладить одежду", cat: "phrases", icon: "fa-temperature-high", 
+                id: 50, char: "熨衣服", pinyin: "yùn yīfu", translation: "Гладить одежду", cat: "phrases", icon: "fa-temperature-high", 
                 exChar: "他洗完衣服以后开始熨衣服。", exPin: "Tā xǐ wán yīfu yǐhòu kāishǐ yùn yīfu.", exTrans: "Постирав одежду, он начал ее гладить." 
             },
             { 
-                id: 37, char: "买东西", pinyin: "mǎi dōngxi", translation: "Закупаться вещами", cat: "phrases", icon: "fa-cart-shopping", 
+                id: 51, char: "买东西", pinyin: "mǎi dōngxi", translation: "Закупаться вещами", cat: "phrases", icon: "fa-cart-shopping", 
                 exChar: "妈妈去超市买东西了。", exPin: "Māma qù chāoshì mǎi dōngxi le.", exTrans: "Мама пошла в супермаркет за покупками." 
             },
             { 
-                id: 38, char: "丢垃圾", pinyin: "diū lājī", translation: "Выносить мусор", cat: "phrases", icon: "fa-dumpster", 
+                id: 52, char: "丢垃圾", pinyin: "diū lājī", translation: "Выносить мусор", cat: "phrases", icon: "fa-dumpster", 
                 exChar: "出门的时候别忘了丢垃圾。", exPin: "Chūmén de shíhou bié wàngle diū lājī.", exTrans: "Выходя из дома, не забудь выбросить мусор." 
             },
             { 
-                id: 39, char: "摆桌子", pinyin: "bǎi zhuōzi", translation: "Накрывать на стол", cat: "phrases", icon: "fa-pizza-slice", 
+                id: 53, char: "摆桌子", pinyin: "bǎi zhuōzi", translation: "Накрывать на стол", cat: "phrases", icon: "fa-pizza-slice", 
                 exChar: "吃饭以前，我先摆桌子。", exPin: "Chīfàn yǐqián, wǒ xiān bǎi zhuōzi.", exTrans: "Перед едой я сначала накрываю на стол." 
             },
             { 
-                id: 40, char: "放洗碗机", pinyin: "fàng xǐwǎnji", translation: "Загружать посудомойку", cat: "phrases", icon: "fa-arrows-down-to-people", 
+                id: 54, char: "放洗碗机", pinyin: "fàng xǐwǎnji", translation: "Загружать посудомойку", cat: "phrases", icon: "fa-arrows-down-to-people", 
                 exChar: "脏盘子都放洗碗机里吧。", exPin: "Zāng pánzi dōu fàng xǐwǎnji lǐ ba.", exTrans: "Положи грязные тарелки в посудомоечную машину." 
             },
             { 
-                id: 41, char: "洗碗", pinyin: "xǐ wǎn", translation: "Мыть посуду руками", cat: "phrases", icon: "fa-circle-check", 
+                id: 55, char: "洗碗", pinyin: "xǐ wǎn", translation: "Мыть посуду руками", cat: "phrases", icon: "fa-circle-check", 
                 exChar: "今天轮到你洗碗了。", exPin: "Jīntiān lúndào nǐ xǐwǎn le.", exTrans: "Сегодня твоя очередь мыть посуду." 
             },
             { 
-                id: 42, char: "倒洗洁精", pinyin: "dào xǐjiéjīng", translation: "Наливать средство для посуды", cat: "phrases", icon: "fa-hand-holding-droplet", 
+                id: 56, char: "倒洗洁精", pinyin: "dào xǐjiéjīng", translation: "Наливать средство для посуды", cat: "phrases", icon: "fa-hand-holding-droplet", 
                 exChar: "洗碗的时候要倒一点洗洁精。", exPin: "Xǐwǎn de shíhou yào dào yìdiǎn xǐjiéjīng.", exTrans: "При мытье посуды нужно налить немного средства." 
             },
             { 
-                id: 43, char: "放洗衣粉", pinyin: "fàng xǐyīfěn", translation: "Насыпать стиральный порошок", cat: "phrases", icon: "fa-spoon", 
+                id: 57, char: "放洗衣粉", pinyin: "fàng xǐyīfěn", translation: "Насыпать стиральный порошок", cat: "phrases", icon: "fa-spoon", 
                 exChar: "别忘了在洗衣机里放洗衣粉。", exPin: "Bié wàngle zài xǐyījī lǐ fàng xǐyīfěn.", exTrans: "Не забудь насыпать стиральный порошок в стиральную машину." 
             },
             { 
-                id: 44, char: "收拾房间", pinyin: "shōushi fángjiān", translation: "Прибираться в комнате", cat: "phrases", icon: "fa-house", 
+                id: 58, char: "收拾房间", pinyin: "shōushi fángjiān", translation: "Прибираться в комнате", cat: "phrases", icon: "fa-house", 
                 exChar: "这个周末我要好好收拾房间。", exPin: "Zhège zhōumò wǒ yào hǎohāo shōushi fángjiān.", exTrans: "В эти выходные я собираюсь как следует прибраться в комнате." 
             },
             { 
-                id: 45, char: "浇花", pinyin: "jiāo huā", translation: "Поливать цветы", cat: "phrases", icon: "fa-seedling", 
+                id: 59, char: "浇花", pinyin: "jiāo huā", translation: "Поливать цветы", cat: "phrases", icon: "fa-seedling", 
                 exChar: "阳台上的花需要每天浇水。", exPin: "Yángtái shàng de huā xūyào měitiān jiāoshuǐ.", exTrans: "Цветы на балконе нужно поливать каждый день." 
             }
         ];
